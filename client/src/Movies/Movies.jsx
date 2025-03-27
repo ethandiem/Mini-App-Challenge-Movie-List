@@ -1,10 +1,14 @@
 import './Movies.css';
 import { useState, useEffect } from 'react';
+import { useContext } from 'react';
+import { WatchedContext } from '../Context/WatchedContext.jsx';
 
 function Movies() {
 const [movies, setMovies] = useState([]);
 const [searchQuery, setSearchQuery] = useState('');
 const [newMovie, setNewMovie] = useState('');
+
+const { watchedMovies, setWatchedMovies } = useContext(WatchedContext);
 
 useEffect(() => {
   fetch('http://localhost:3001/movies')
@@ -20,6 +24,14 @@ useEffect(() => {
 const filteredMovies = movies.filter((movie) =>
   movie.title.toLowerCase().includes(searchQuery.toLowerCase())
 );
+
+const handleWatchedMovie = (movie) => {
+  if (watchedMovies.some((watched) => watched.id === movie.id)) {
+    setWatchedMovies(watchedMovies.filter((watched) => watched.id !== movie.id));
+  } else {
+    setWatchedMovies([...watchedMovies, movie]);
+  }
+}
 
 const handleAddMovie = (e) => {
   e.preventDefault();
@@ -60,10 +72,8 @@ const handleDeleteMovie = (id) => {
     });
 }
 
-
 return (
   <>
-  <h2>Go ahead and search for the movies since there's so many...</h2>
   <input
         type="text"
         placeholder="Search Movies"
@@ -87,7 +97,11 @@ return (
     filteredMovies.map((movie) => (
       <div key={movie.id} className="movie-item">
         <p className = "movie-title">{movie.title}</p>
-          <button className="delete-movie-button" onClick={() => handleDeleteMovie(movie.id)}>Delete</button>
+        <button className = "delete-movie-button" onClick={() => handleDeleteMovie(movie.id)}>Delete</button>
+        <button className = {`watched-movie-button
+          ${watchedMovies.some((watched) => watched.id === movie.id) ? 'watched' : '' }`}
+              onClick = {() => handleWatchedMovie(movie)}>
+          {watchedMovies.some((watched) => watched.id === movie.id) ? 'Watched' : 'To Watch'}</button>
     </div>
     ))
   ) : (

@@ -28,3 +28,26 @@
 .delete-movie-button:hover {
   background-color: darkred;
 }
+
+.watched-movie-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.watched-movie-button:hover {
+  background-color: #0056b3;
+}
+
+.watched-movie-button.watched {
+  background-color: green;
+  cursor: default;
+}
+
+.watched-movie-button.watched:hover {
+  background-color: green;
+}
