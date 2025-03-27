@@ -30,6 +30,28 @@ app.get('/movies', async (req, res) => {
 	}
 })
 
+app.post('/movies', async (req, res) => {
+	const { title } = req.body;
+	try {
+		const newMovie = await knex('movies').insert({ title });
+		res.status(201).json(newMovie);
+	} catch (error) {
+		console.error('Error adding movie:', error);
+		res.status(500).json({ error: 'Failed to add movie' });
+	}
+})
+
+app.delete('/movies/:id', async (req, res) => {
+	const { id } = req.params;
+	try {
+		await knex('movies').where({ id }).del();
+		res.status(200).json({ message: 'Movie deleted successfully' });
+	} catch (error) {
+		console.error('Error deleting movie:', error);
+		res.status(500).json({ error: 'Failed to delete movie' });
+	}
+})
+
 const server = app.listen(PORT, () => {
 	console.log(`App listening at http://localhost:${PORT}`);
 });

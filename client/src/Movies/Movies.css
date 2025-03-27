@@ -1,0 +1,30 @@
+.movie-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.movie-title {
+  margin: 0;
+  font-size: 16px;
+}
+
+.delete-movie-button {
+  display: none; /* Hide the button by default */
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.movie-item:hover .delete-movie-button {
+  display: inline-block; /* Show the button on hover */
+}
+
+.delete-movie-button:hover {
+  background-color: darkred;
+}
