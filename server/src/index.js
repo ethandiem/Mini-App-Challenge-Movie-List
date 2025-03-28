@@ -31,15 +31,18 @@ app.get('/movies', async (req, res) => {
 })
 
 app.post('/movies', async (req, res) => {
-	const { title } = req.body;
-	try {
-		const newMovie = await knex('movies').insert({ title });
-		res.status(201).json(newMovie);
-	} catch (error) {
-		console.error('Error adding movie:', error);
-		res.status(500).json({ error: 'Failed to add movie' });
-	}
-})
+  const { title, info } = req.body;
+  if (!title || !info) {
+    return res.status(400).json({ error: 'Title and info are required' });
+  }
+  try {
+    const [id] = await knex('movies').insert({ title, info }).returning('id');
+    res.status(201).json({ id });
+  } catch (error) {
+    console.error('Error adding movie:', error);
+    res.status(500).json({ error: 'Failed to add movie' });
+  }
+});
 
 app.delete('/movies/:id', async (req, res) => {
 	const { id } = req.params;
@@ -54,6 +57,21 @@ app.delete('/movies/:id', async (req, res) => {
 
 const server = app.listen(PORT, () => {
 	console.log(`App listening at http://localhost:${PORT}`);
+});
+
+app.get('/movies/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const movie = await knex('movies').where({ id }).first();
+    if (movie) {
+      res.status(200).json(movie);
+    } else {
+      res.status(404).json({ error: 'Movie not found' });
+    }
+  } catch (error) {
+    console.error('Error fetching movie:', error);
+    res.status(500).json({ error: 'Failed to fetch movie' });
+  }
 });
 
 module.exports = { app, server, PORT };
